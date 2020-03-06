@@ -3,7 +3,9 @@ trigger:
 - releases/*
 
 variables:
-  rev: $[counter(variables['Build.SourceBranch'], 0)]
+- group: Cblx.ODataLite
+- name: rev
+  value: $[counter(variables['Build.SourceBranch'], 0)]
 
 stages:
 - stage: Build
