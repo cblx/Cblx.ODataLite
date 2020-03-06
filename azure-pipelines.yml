@@ -2,17 +2,32 @@ name: $(Build.SourceBranch)$(rev:.r)
 trigger:
 - releases/*
 
+variables:
+  rev: $[counter(variables['Build.SourceBranch'], 0)]
+
 stages:
 - stage: Build
   jobs:
-  - script: dotnet pack
+  - job:
+    steps:
+    - script: echo "##vso[build.updatebuildnumber]$(Build.SourceBranchName).$(Rev)"
+    - script: dotnet pack -o $(Build.ArtifactStagingDirectory) -c Release -p:PackageVersion=$(Build.BuildNumber)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
-
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+# DEPLOY #######################################################################
+- ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/releases') }}:
+  - stage: Deploy
+    dependsOn: Build
+    displayName: NuGet
+    jobs:
+    - deployment: Deploy
+      environment: Cblx Nuget
+      strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: dotnet nuget push $(Pipeline.Workspace)/drop/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json
