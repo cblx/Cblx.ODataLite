@@ -1,0 +1,35 @@
+name: $(Build.SourceBranch)$(rev:.r)
+trigger:
+- releases/*
+
+variables:
+- group: Cblx.ODataLite
+- name: rev
+  value: $[counter(variables['Build.SourceBranch'], 0)]
+
+stages:
+- stage: Build
+  jobs:
+  - job:
+    steps:
+    - script: echo "##vso[build.updatebuildnumber]$(Build.SourceBranchName).$(Rev)"
+    - script: dotnet pack -o $(Build.ArtifactStagingDirectory) -c Release -p:PackageVersion=$(Build.BuildNumber)
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+
+# DEPLOY #######################################################################
+- ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/releases') }}:
+  - stage: Deploy
+    dependsOn: Build
+    displayName: NuGet
+    jobs:
+    - deployment: Deploy
+      environment: Cblx Nuget
+      strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: dotnet nuget push $(Pipeline.Workspace)/drop/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json
