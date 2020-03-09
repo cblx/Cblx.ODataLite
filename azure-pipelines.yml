@@ -32,4 +32,6 @@ stages:
         runOnce:
           deploy:
             steps:
-            - script: dotnet nuget push $(Pipeline.Workspace)/drop/**/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json
+            # pushes all packages. -n true is necessary to not try finding symbols:
+            # https://github.com/NuGet/Home/issues/8148
+            - script: dotnet nuget push $(Pipeline.Workspace)/drop/**/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json -n true
