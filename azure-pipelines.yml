@@ -29,7 +29,7 @@ stages:
     - deployment: Deploy
       environment: Cblx Nuget
       strategy:
-      runOnce:
-        deploy:
-          steps:
-          - script: dotnet nuget push $(Pipeline.Workspace)/drop/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json
+        runOnce:
+          deploy:
+            steps:
+            - script: dotnet nuget push $(Pipeline.Workspace)/drop/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json
