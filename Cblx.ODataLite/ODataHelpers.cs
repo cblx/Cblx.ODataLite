@@ -7,6 +7,24 @@ namespace Cblx.ODataLite
 {
     public static class ODataHelpers
     {
+        public static IODataParameters CreateParameters(
+            string select,
+            bool count = false,
+            string orderBy = null,
+            int? skip = null,
+            int? top = null
+        )
+        {
+            return new ODataParametersInternal
+            {
+                Count = count,
+                OrderBy = orderBy,
+                Select = select,
+                Skip = skip,
+                Top = top
+            };
+        }
+
         public static ODataResult<T> Execute<T>(this IQueryable<T> queryable, IODataParameters oDataParameters)
         {
             var list = oDataParameters.Top == 0 ? new List<T>() : ExecuteList(queryable, oDataParameters);
