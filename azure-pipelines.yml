@@ -32,4 +32,4 @@ stages:
         runOnce:
           deploy:
             steps:
-            - script: dotnet nuget push $(Pipeline.Workspace)/drop/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json
+            - script: dotnet nuget push $(Pipeline.Workspace)/drop/**/*.nupkg -k $(apiKey) -s https://api.nuget.org/v3/index.json
