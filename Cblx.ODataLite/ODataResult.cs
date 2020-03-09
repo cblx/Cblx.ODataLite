@@ -26,13 +26,13 @@ namespace Cblx.ODataLite
         public List<Dictionary<string, object>> ConvertToRestrictedValue()
         {
             //Propriedades selecionadas
-            var selected = oDataParameters.Select.Split(",");
+            var selected = oDataParameters.Select.Split(',');
 
             //Obtenho as props
             var lstProps = selected.Select(
                 s =>
                 {
-                    var prop = itemType.GetProperties().FirstOrDefault(prop => string.Equals(s, prop.Name, StringComparison.OrdinalIgnoreCase));
+                    var prop = itemType.GetProperties().FirstOrDefault(prop2 => string.Equals(s, prop2.Name, StringComparison.OrdinalIgnoreCase));
                     if (prop == null) { throw new ArgumentException($"Property {s} not found!"); }
                     return prop;
                 }

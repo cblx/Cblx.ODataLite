@@ -32,13 +32,13 @@ namespace Cblx.ODataLite
                 //Cria param para o item
                 var paramItem = Expression.Parameter(typeof(T), "item");
 
-                var orderByes = oDataParameters.OrderBy.Split(",");
+                var orderByes = oDataParameters.OrderBy.Split(',');
                 foreach (var ob in orderByes)
                 {
                     var parts = ob.Split(' ');
 
                     //Procuro a prop correspondente
-                    var prop = typeof(T).GetProperties().FirstOrDefault(prop => string.Equals(parts[0], prop.Name, StringComparison.OrdinalIgnoreCase));
+                    var prop = typeof(T).GetProperties().FirstOrDefault(prop2 => string.Equals(parts[0], prop2.Name, StringComparison.OrdinalIgnoreCase));
                     if (prop == null)
                     {
                         throw new ArgumentException($"Property '{parts[0]}' used in $orderby was not found");
