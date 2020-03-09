@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 
-namespace Cblx.ODataLite.AspNetCore
+namespace Cblx.ODataLite
 {
     public class ODataQueryParameters : IODataParameters
     {
